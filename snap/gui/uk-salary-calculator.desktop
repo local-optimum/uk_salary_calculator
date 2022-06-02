@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=UK Salary Calculator
+Comment=A simple way to see your take-home pay after tax and National Insurance.
+Exec=uk_salary_calculator
+Icon=${SNAP}/meta/gui/appicon.png
+Terminal=false
+Type=Application
+Categories=Finance;
+Keywords=Finance;
+StartupNotify=false
