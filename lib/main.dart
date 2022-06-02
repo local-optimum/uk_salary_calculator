@@ -50,13 +50,52 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Center(
             child: Column(
               children: [
+           
                 const SizedBox(
-                  height: 30,
+                  height: 40.0,
+                ),
+                const CircleAvatar(
+                  radius: 75.0,
+                  backgroundColor: Colors.black,
+                  backgroundImage: AssetImage('images/thomas_sowell.png'),
                 ),
                 const SizedBox(
-                  width: 450,
+                  height: 30.0,
+                ),
+                SizedBox(
+                  width: 400,
                   child: Text(
-                      'Welcome to the UK Salary Tax Calculator, put in your salary to return your take-home pay and a breakdown of Tax and National Insurance contributions'),
+                    '"First you take people\'s money away quietly, and then you give some of it back to them flamboyantly."',
+                    style: Theme.of(context).textTheme.subtitle2,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20.0,
+                  width: 20.0,
+                  child: Divider(
+                    thickness: 2,
+                  ),
+                ),
+                Text(
+                  'Thomas Sowell',
+                  style: Theme.of(context).textTheme.caption,
+                ),
+                const SizedBox(
+                  height: 40.0,
+                  width: 300.0,
+                  child: Divider(
+                    thickness: 2.0,
+                  ),
+                ),
+                SizedBox(
+                  width: 400,
+                  child: Text(
+                      'Enter your annual salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey.shade400),
+                     
+                      ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -77,9 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 100
-                ),
+                const SizedBox(height: 100),
               ],
             ),
           ),
@@ -125,20 +162,19 @@ class MyCustomFormState extends State<MyCustomForm> {
   double incometax = 0;
   double takehome = 0;
 
-  String salaryf='';
-  String nif='';
-  String paf='';
-  String itf='';
-  String thf='';
+  String salaryf = '';
+  String nif = '';
+  String paf = '';
+  String itf = '';
+  String thf = '';
 
   //formatting for numbers
 
-    void initStartDate() {
-    salaryinput.text = NumberFormat.currency(symbol:'£ ', decimalDigits: 2)
+  void initStartDate() {
+    salaryinput.text = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
         .format(salary); //set the initial value of text field
     super.initState();
   }
-
 
   void getData() async {
     var ni = await NIcontributions().getNIcontributions(salary);
@@ -161,13 +197,16 @@ class MyCustomFormState extends State<MyCustomForm> {
       takehome = th;
     });
 
-    salaryf = NumberFormat.currency(symbol:'£ ', decimalDigits: 2).format(salary);
-    nif = NumberFormat.currency(symbol:'£ ', decimalDigits: 2).format(nationalinsurance);
-    paf = NumberFormat.currency(symbol:'£ ', decimalDigits: 2).format(personalallowance);
-    itf = NumberFormat.currency(symbol:'£ ', decimalDigits: 2).format(incometax);
-    thf = NumberFormat.currency(symbol:'£ ', decimalDigits: 2).format(takehome);
-
-
+    salaryf =
+        NumberFormat.currency(symbol: '£ ', decimalDigits: 2).format(salary);
+    nif = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
+        .format(nationalinsurance);
+    paf = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
+        .format(personalallowance);
+    itf =
+        NumberFormat.currency(symbol: '£ ', decimalDigits: 2).format(incometax);
+    thf =
+        NumberFormat.currency(symbol: '£ ', decimalDigits: 2).format(takehome);
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -279,9 +318,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                             Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(nif),
-                            ),),
+                                alignment: Alignment.centerRight,
+                                child: Text(nif),
+                              ),
+                            ),
                           ],
                         ),
                         TableRow(
@@ -295,9 +335,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                             Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: Container(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(itf),
-                            ),
+                                alignment: Alignment.centerRight,
+                                child: Text(itf),
+                              ),
                             ),
                           ],
                         ),
