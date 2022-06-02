@@ -8,7 +8,7 @@ Calculations based on the 22-23 tax year.
 
 ------------
 
-Simple flutter app themed with Yaru.
+Simple Flutter app themed with Yaru.
 
 ------------
 
@@ -16,3 +16,7 @@ Simple flutter app themed with Yaru.
 
 * Pension contributions
 * Monthly / weekly / hourly breakdowns
+
+## Screenshots
+
+![UK Salary App Screenshot](/screenshots/screenshot.png)
