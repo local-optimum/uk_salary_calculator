@@ -21,7 +21,10 @@ class NIcontributions {
 class PersonalAllowance {
   Future getPersonalAllowance(salary) async {
     double baseallowance = 12570;
-    if (salary>100000){
+    if(salary>100000+2*baseallowance){
+      return 0;
+    }
+    else if (salary>100000){
       return baseallowance - ((salary-100000)/2);
     } else { return baseallowance;
     }

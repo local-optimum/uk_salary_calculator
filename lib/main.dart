@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yaru/yaru.dart';
+import 'package:intl/intl.dart';
 
 //import calculations
 import 'calculations.dart';
@@ -116,16 +117,19 @@ class MyCustomForm extends StatefulWidget {
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
   double salary = 0;
-  var nationalinsurance=0.0;
+  dynamic nationalinsurance;
+  dynamic personalallowance;
 
   void getData() async {
+    var ni = await NIcontributions().getNIcontributions(salary);
+    setState(() {
+      nationalinsurance = ni;
+    });
 
-      var data = await NIcontributions().getNIcontributions(salary);
-      setState(() {
-        nationalinsurance = data;
-      });
-
-
+    var pa = await PersonalAllowance().getPersonalAllowance(salary);
+    setState(() {
+      personalallowance = pa;
+    });
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -160,7 +164,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               }
               return null;
             },
-            onChanged: (value)=> salary =double.parse(value),
+            onChanged: (value) => salary = double.parse(value),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 30.0),
@@ -172,47 +176,64 @@ class MyCustomFormState extends State<MyCustomForm> {
             ),
           ),
 
-
-
           //RESULTS APPEAR AFTER
           if (salary > 0) ...[
-          SizedBox(
-            width: 600,
-            child: Padding(
-              padding: const EdgeInsets.all(30.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text('Take Home Pay', style: Theme.of(context).textTheme.headline6,),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Table(
-                    border: TableBorder.all(color: Colors.grey),
-                    children: [
-                      TableRow( children: [
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: const Text ('National Insurance:')),
+            SizedBox(
+              width: 600,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      'Take Home Pay',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Table(
+                      border: TableBorder.all(color: Colors.grey),
+                      children: [
+                        TableRow(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text('National Insurance:')),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text('$nationalinsurance')),
+                            ),
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Container(
-                            alignment: Alignment.centerRight,
-                            child: Text ('$nationalinsurance')),
+                        TableRow(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: const Text('Personal Allowance:')),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text('$personalallowance')),
+                            ),
+                          ],
                         ),
                       ],
-
-                      ),
-                    ],
-
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
-          ),],
+          ],
         ],
       ),
     );
