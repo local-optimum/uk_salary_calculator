@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:yaru/yaru.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+
+
+  
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var theme = yaruDark;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'UK Salary Calculator',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: const MyHomePage(title: 'UK Salary Calculator'),
+      theme: theme,
+      home: MyHomePage(title: 'UK Salary Calculator'),
     );
   }
 }
@@ -35,7 +41,6 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
-
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -73,28 +78,40 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: SingleChildScrollView(
           child: Center(
-            child: SizedBox(
-              width: 600,
-              child: Card(
-                margin:
-                    const EdgeInsets.symmetric(vertical: 0.0, horizontal: 25.0),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const MyCustomForm(),
-                      const Text(
-                        'You have pushed the button this many times:',
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+                const Text(
+                    'Welcome to the UK Tax Calculator, put in your salary and we\'ll calculate how much you will pay in tax'),
+                const SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: 600,
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 0.0, horizontal: 25.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const MyCustomForm(),
+                          const Text(
+                            'You have pushed the button this many times:',
+                          ),
+                          Text(
+                            '$_counter',
+                            style: Theme.of(context).textTheme.headline4,
+                          ),
+                        ],
                       ),
-                      Text(
-                        '$_counter',
-                        style: Theme.of(context).textTheme.headline4,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -111,12 +128,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
             children: [
               Row(
-              
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: const Text('Created by Local Optimum'),
+                    padding: EdgeInsets.all(14.0),
+                    child: Text('Created by Local Optimum'),
                   ),
                 ],
               ),
@@ -182,7 +198,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
+            padding: const EdgeInsets.symmetric(vertical: 14.0),
             child: ElevatedButton(
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
@@ -202,4 +218,3 @@ class MyCustomFormState extends State<MyCustomForm> {
     );
   }
 }
-
