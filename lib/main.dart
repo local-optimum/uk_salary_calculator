@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:yaru/yaru.dart';
 
+//import calculations
+import 'calculations.dart';
+
 void main() {
   runApp(const MyApp());
 }
 
-
-
-  
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -23,22 +23,13 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'UK Salary Calculator',
       theme: theme,
-      home: MyHomePage(title: 'UK Salary Calculator'),
+      home: const MyHomePage(title: 'UK Salary Tax Calculator'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -47,34 +38,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
         appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Center(
-            child: Text(widget.title),
-          ),
+          title: Text(widget.title),
+          centerTitle: true,
         ),
         body: SingleChildScrollView(
           child: Center(
@@ -83,8 +52,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(
                   height: 30,
                 ),
-                const Text(
-                    'Welcome to the UK Tax Calculator, put in your salary and we\'ll calculate how much you will pay in tax'),
+                const SizedBox(
+                  width: 450,
+                  child: Text(
+                      'Welcome to the UK Salary Tax Calculator, put in your salary to return your take-home pay and a breakdown of Tax and National Insurance contributions'),
+                ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -94,18 +66,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     margin: const EdgeInsets.symmetric(
                         vertical: 0.0, horizontal: 25.0),
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.all(30.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const MyCustomForm(),
-                          const Text(
-                            'You have pushed the button this many times:',
-                          ),
-                          Text(
-                            '$_counter',
-                            style: Theme.of(context).textTheme.headline4,
-                          ),
+                        children: const <Widget>[
+                          MyCustomForm(),
                         ],
                       ),
                     ),
@@ -114,11 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
         ),
         //BOTTOM SHEET TO ADD CONTACT DETAILS - ADD STATISTA LINK
         bottomSheet: Container(
@@ -155,7 +115,21 @@ class MyCustomForm extends StatefulWidget {
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
+  double salary = 0;
+  var nationalinsurance=0.0;
+
+  void getData() async {
+
+      var data = await NIcontributions().getNIcontributions(salary);
+      setState(() {
+        nationalinsurance = data;
+      });
+
+
+  }
+
   final _formKey = GlobalKey<FormState>();
+  TextEditingController salaryinput = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -166,53 +140,79 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           TextFormField(
+            controller: salaryinput,
             decoration: const InputDecoration(
               icon: Icon(Icons.currency_pound_sharp),
               hintText: 'Salary before deductions',
-              labelText: 'Gross Salary',
+              labelText: 'Annual Salary',
               border: OutlineInputBorder(),
               floatingLabelBehavior: FloatingLabelBehavior.always,
               filled: true,
-              hoverColor: Colors.white,
             ),
+            keyboardType: TextInputType.number,
+            onSaved: (String? value) {
+              salary = double.parse(value!);
+            },
             // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
+            validator: (String? value) {
+              if (value!.isEmpty || double.tryParse(value) == null) {
+                return 'Please enter a valid number';
               }
               return null;
             },
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              icon: Icon(Icons.currency_pound_sharp),
-              hintText: 'Salary before deductions',
-              labelText: 'Gross Salary',
-            ),
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+            onChanged: (value)=> salary =double.parse(value),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14.0),
+            padding: const EdgeInsets.only(top: 30.0),
             child: ElevatedButton(
               onPressed: () {
-                // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState!.validate()) {
-                  // If the form is valid, display a snackbar. In the real world,
-                  // you'd often call a server or save the information in a database.
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Processing Data')),
-                  );
-                }
+                if (_formKey.currentState!.validate()) getData();
               },
               child: const Text('Submit'),
             ),
           ),
+
+
+
+          //RESULTS APPEAR AFTER
+          if (salary > 0) ...[
+          SizedBox(
+            width: 600,
+            child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Take Home Pay', style: Theme.of(context).textTheme.headline6,),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Table(
+                    border: TableBorder.all(color: Colors.grey),
+                    children: [
+                      TableRow( children: [
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text ('National Insurance:')),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Text ('$nationalinsurance')),
+                        ),
+                      ],
+
+                      ),
+                    ],
+
+                  )
+                ],
+              ),
+            ),
+          ),],
         ],
       ),
     );
