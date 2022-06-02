@@ -39,6 +39,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
            
                 const SizedBox(
-                  height: 40.0,
+                  height: 20.0,
                 ),
                 const CircleAvatar(
                   radius: 75.0,
@@ -176,6 +179,9 @@ class MyCustomFormState extends State<MyCustomForm> {
     super.initState();
   }
 
+
+  //primary calculating function
+
   void getData() async {
     var ni = await NIcontributions().getNIcontributions(salary);
     setState(() {
@@ -244,6 +250,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                 return null;
               },
               onChanged: (value) => salary = double.parse(value),
+              onFieldSubmitted: (value) {
+                if (_formKey.currentState!.validate()) getData();
+              },
             ),
           ),
           Padding(
