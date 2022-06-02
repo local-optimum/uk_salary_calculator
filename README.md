@@ -1,16 +1,18 @@
-# uk_salary_calculator
+# UK Salary Tax Calculator
 
-A new Flutter project.
+__"First you take people's money away quietly, and then you give some of it back to them flamboyantly."__ - Thomas Sowell
 
-## Getting Started
+Enter your annual salary to return a breakdown of your take-home pay after tax and National Insurance contributions.
 
-This project is a starting point for a Flutter application.
+Calculations based on the 22-23 tax year.
 
-A few resources to get you started if this is your first Flutter project:
+------------
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Simple flutter app themed with Yaru.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+------------
+
+## Coming Soon
+
+* Pension contributions
+* Monthly / weekly / hourly breakdowns

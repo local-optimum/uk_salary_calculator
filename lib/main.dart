@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:yaru/yaru.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +27,7 @@ class _MyAppState extends State<MyApp> {
       title: 'UK Salary Calculator',
       theme: theme,
       home: const MyHomePage(title: 'UK Salary Tax Calculator'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -33,6 +36,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
+  
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -40,8 +44,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   
-  
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +56,6 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Center(
             child: Column(
               children: [
-           
                 const SizedBox(
                   height: 20.0,
                 ),
@@ -94,11 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 400,
                   child: Text(
-                      'Enter your annual salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey.shade400),
-                     
-                      ),
+                    'Enter your annual salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.grey.shade400),
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -126,17 +127,24 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         //BOTTOM SHEET TO ADD CONTACT DETAILS - ADD STATISTA LINK
         bottomSheet: Container(
-          height: 50.0,
+          height: 40.0,
           color: Colors.black26,
           child: Center(
               child: Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.all(14.0),
-                    child: Text('Created by Local Optimum'),
+                children: [
+                  const Text('Created by Local Optimum   //'),
+                  TextButton(
+                    onPressed: () async {
+                      try{
+                        await launchUrlString('https://github.com/local-optimum/uk_salary_calculator');
+                      }catch(err){debugPrint('could not reach site.');}
+                    },
+                    child: const Text(
+                      'Github',
+                    ),
                   ),
                 ],
               ),
@@ -178,7 +186,6 @@ class MyCustomFormState extends State<MyCustomForm> {
         .format(salary); //set the initial value of text field
     super.initState();
   }
-
 
   //primary calculating function
 
@@ -227,7 +234,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
+            padding: const EdgeInsets.symmetric(horizontal: 120),
             child: TextFormField(
               controller: salaryinput,
               decoration: const InputDecoration(
