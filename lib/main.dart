@@ -171,7 +171,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   //user input variables
 
   double initsalary = 0;
-  double salarytime = 1;
+  double salarytime = 1; //1 = annual, 12 = monthly, 52 = weekly, 365 = daily, hourly is then daily multiplied by hours tracked in next var
   double hoursperday = 8;
 
   double salary = 0;
@@ -200,11 +200,18 @@ class MyCustomFormState extends State<MyCustomForm> {
   //primary calculating function
 
   void getData(timeunit) async {
-    salary = initsalary * salarytime;
-    
-    if(timeunit>500){
-      timeunit = 365*hoursperday;
+
+    //convert to annual salary from inputs
+
+    if(salarytime>500){
+      salarytime = 365*hoursperday;
     }
+    
+    salary = initsalary * salarytime;
+
+
+    //run calculations
+
 
     var ni = await NIcontributions().getNIcontributions(salary);
     setState(() {
@@ -226,7 +233,11 @@ class MyCustomFormState extends State<MyCustomForm> {
       takehome = th;
     });
 
-    //convert to monthly/weekly/hourly
+    //convert to monthly/weekly/hourly based on output selection
+
+    if(timeunit>500){
+      timeunit = 365*hoursperday;
+    }
 
     out_salary = salary / timeunit;
     out_nationalinsurance = nationalinsurance / timeunit;
@@ -301,7 +312,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 const EdgeInsets.symmetric(vertical: 10.0, horizontal: 120),
             child: DropdownButtonFormField(
                 alignment: Alignment.center,
-                value: salarytime,
+                value: 1.0,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.calendar_month),
                   labelText: 'Paid',
@@ -386,6 +397,15 @@ class MyCustomFormState extends State<MyCustomForm> {
               child: const Text('Submit'),
             ),
           ),
+
+
+
+
+
+
+
+
+
 
           //RESULTS APPEAR AFTER
           if (salary > 0) ...[
