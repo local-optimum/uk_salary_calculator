@@ -92,21 +92,21 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 450,
                   child: Text(
-                    'Enter your salary to return a breakdown of your take-home pay\nafter tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year using data from HMRC.',
+                    'Enter your salary to return a breakdown of your take-home pay after tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year, using data from HMRC.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey.shade400),
                   ),
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 SizedBox(
                   width: 600,
                   child: Card(
                     margin: const EdgeInsets.symmetric(
-                        vertical: 0.0, horizontal: 25.0),
+                        vertical: 0.0, horizontal: 10.0),
                     child: Padding(
-                      padding: const EdgeInsets.all(30.0),
+                      padding: const EdgeInsets.all(20.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const <Widget>[
@@ -271,7 +271,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 120),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
               controller: salaryinput,
               decoration: const InputDecoration(
@@ -307,7 +307,7 @@ class MyCustomFormState extends State<MyCustomForm> {
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 120),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
             child: DropdownButtonFormField(
                 alignment: Alignment.center,
                 value: 1.0,
@@ -349,7 +349,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                 },),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 120),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
               controller: hoursinput,
               decoration: const InputDecoration(
@@ -410,7 +410,7 @@ class MyCustomFormState extends State<MyCustomForm> {
             SizedBox(
               width: 600,
               child: Padding(
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
