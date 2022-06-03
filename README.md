@@ -10,6 +10,8 @@ Calculations based on the 22-23 tax year.
 
 Simple Flutter app themed with Yaru.
 
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/uk-salary-calculator)
+
 ------------
 
 ## Coming Soon
