@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 400,
                   child: Text(
-                    'Enter your salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year.',
+                    'Enter your salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year\nusing data from HMRC.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey.shade400),
                   ),
@@ -183,7 +183,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   double incometax = 0;
   double takehome = 0;
   double timeunit =
-      1.0; //1 = annual, 12 = monthly, 52 = weekly, 365 = daily hourly is then daily multiplied by hours tracked in next var
+      1.0; //1 = annual, 12 = monthly, 52 = weekly, 365 = daily, hourly is then daily multiplied by hours tracked in next var
 
   double out_salary = 0;
   double out_nationalinsurance = 0;
@@ -201,6 +201,10 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   void getData(timeunit) async {
     salary = initsalary * salarytime;
+    
+    if(timeunit>500){
+      timeunit = 365*hoursperday;
+    }
 
     var ni = await NIcontributions().getNIcontributions(salary);
     setState(() {
@@ -246,6 +250,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   final _formKey = GlobalKey<FormState>();
   TextEditingController salaryinput = TextEditingController();
+  TextEditingController hoursinput = TextEditingController(text: '40');
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +262,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 120),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 120),
             child: TextFormField(
               controller: salaryinput,
               decoration: const InputDecoration(
@@ -288,56 +293,90 @@ class MyCustomFormState extends State<MyCustomForm> {
                 if (_formKey.currentState!.validate()) {
                   initsalary = double.parse(value);
                 }
-                getData(timeunit);
               },
             ),
           ),
           Padding(
             padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120),
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 120),
             child: DropdownButtonFormField(
                 alignment: Alignment.center,
                 value: salarytime,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.calendar_month),
-                  hintText: 'Salary before deductions',
                   labelText: 'Paid',
                   border: OutlineInputBorder(),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   filled: true,
                 ),
-                items: [
-                  const DropdownMenuItem(
+                items: const [
+                  DropdownMenuItem(
                     value: 1.0,
                     child: Text("Annually"),
                   ),
-                  const DropdownMenuItem(
+                  DropdownMenuItem(
                     value: 12.0,
                     child: Text("Monthly"),
                   ),
-                  const DropdownMenuItem(
+                  DropdownMenuItem(
                     value: 52.0,
                     child: Text("Weekly"),
                   ),
-                  const DropdownMenuItem(
+                  DropdownMenuItem(
                     value: 365.0,
                     child: Text("Daily"),
                   ),
                   DropdownMenuItem(
-                    value: 365.0 * hoursperday,
-                    child: const Text("Hourly"),
+                    value: 1000.0,
+                    child: Text("Hourly"),
                   ),
                 ],
                 onChanged: (double? value) {
                   setState(() {
-                    salarytime = value!;
-                    getData(timeunit);
-                  });
-                }),
+                    
+                      salarytime = value!;
+                    
+                  },);
+                },),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 120),
+            child: TextFormField(
+              controller: hoursinput,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.punch_clock),
+                hintText: 'Hours worked per week',
+                labelText: 'Hours per week',
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                filled: true,
+              ),
+              keyboardType: TextInputType.number,
+              onSaved: (String? value) {
+                hoursperday = double.parse(value!) / 7;
+              },
+              // The validator receives the text that the user has entered.
+              validator: (String? value) {
+                if (value!.isEmpty || double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
+                }
+                return null;
+              },
+              onChanged: (value) {
+                if (_formKey.currentState!.validate()) {
+                  hoursperday = double.parse(value) / 7;
+                }
+              },
+              onFieldSubmitted: (value) {
+                if (_formKey.currentState!.validate()) {
+                  hoursperday = double.parse(value) / 7;
+                }
+              },
+            ),
           ),
 
           Padding(
-            padding: const EdgeInsets.only(top: 30.0),
+            padding: const EdgeInsets.only(top: 10.0),
             child: ElevatedButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
@@ -378,32 +417,35 @@ class MyCustomFormState extends State<MyCustomForm> {
                         DropdownButton(
                           alignment: Alignment.center,
                           value: timeunit,
-                          items: [
-                            const DropdownMenuItem(
+                          items: const [
+                            DropdownMenuItem(
                               value: 1.0,
                               child: Text("Year"),
                             ),
-                            const DropdownMenuItem(
+                            DropdownMenuItem(
                               value: 12.0,
                               child: Text("Month"),
                             ),
-                            const DropdownMenuItem(
+                            DropdownMenuItem(
                               value: 52.0,
                               child: Text("Week"),
                             ),
-                            const DropdownMenuItem(
+                            DropdownMenuItem(
                               value: 365.0,
                               child: Text("Day"),
                             ),
                             DropdownMenuItem(
-                              value: 365.0 * hoursperday, //FIX THIS
-                              child: const Text("Hour"),
+                              value: 1000.0, //FIX THIS
+                              child: Text("Hour"),
                             ),
                           ],
                           onChanged: (double? value) {
                             setState(
                               () {
-                                timeunit = value!;
+                                
+                                  timeunit = value!;
+                                
+
                                 getData(timeunit);
                               },
                             );
