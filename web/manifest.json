@@ -1,11 +1,11 @@
 {
-    "name": "uk_salary_calculator",
-    "short_name": "uk_salary_calculator",
+    "name": "UK Salary Calculator",
+    "short_name": "UK Salary Calculator",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Calculate take home pay after tax and National Insurance.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
