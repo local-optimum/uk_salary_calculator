@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:yaru/yaru.dart';
@@ -36,15 +37,12 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
-  
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -138,9 +136,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   const Text('Created by Local Optimum   //'),
                   TextButton(
                     onPressed: () async {
-                      try{
-                        await launchUrlString('https://github.com/local-optimum/uk_salary_calculator');
-                      }catch(err){debugPrint('could not reach site.');}
+                      try {
+                        await launchUrlString(
+                            'https://github.com/local-optimum/uk_salary_calculator');
+                      } catch (err) {
+                        debugPrint('could not reach site.');
+                      }
                     },
                     child: const Text(
                       'Github',
@@ -172,6 +173,14 @@ class MyCustomFormState extends State<MyCustomForm> {
   double personalallowance = 0;
   double incometax = 0;
   double takehome = 0;
+  double timeunit = 1.0;
+  double hoursperday = 8; //1 = annual, 12 = monthly, 52 = weekly, 365 = daily hourly is then daily multiplied by hours tracked in next var
+
+  double out_salary = 0;
+  double out_nationalinsurance = 0;
+  double out_personalallowance = 0;
+  double out_incometax = 0;
+  double out_takehome = 0;
 
   String salaryf = '';
   String nif = '';
@@ -179,17 +188,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   String itf = '';
   String thf = '';
 
-  //formatting for numbers
-
-  void initStartDate() {
-    salaryinput.text = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
-        .format(salary); //set the initial value of text field
-    super.initState();
-  }
-
   //primary calculating function
 
-  void getData() async {
+  void getData(timeunit) async {
     var ni = await NIcontributions().getNIcontributions(salary);
     setState(() {
       nationalinsurance = ni;
@@ -210,16 +211,26 @@ class MyCustomFormState extends State<MyCustomForm> {
       takehome = th;
     });
 
-    salaryf =
-        NumberFormat.currency(symbol: '£ ', decimalDigits: 2).format(salary);
+    //convert to monthly/weekly/hourly
+
+    out_salary = salary / timeunit;
+    out_nationalinsurance = nationalinsurance / timeunit;
+    out_personalallowance = personalallowance / timeunit;
+    out_incometax = incometax / timeunit;
+    out_takehome = takehome / timeunit;
+
+    //format data
+
+    salaryf = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
+        .format(out_salary);
     nif = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
-        .format(nationalinsurance);
+        .format(out_nationalinsurance);
     paf = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
-        .format(personalallowance);
-    itf =
-        NumberFormat.currency(symbol: '£ ', decimalDigits: 2).format(incometax);
-    thf =
-        NumberFormat.currency(symbol: '£ ', decimalDigits: 2).format(takehome);
+        .format(out_personalallowance);
+    itf = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
+        .format(out_incometax);
+    thf = NumberFormat.currency(symbol: '£ ', decimalDigits: 2)
+        .format(out_takehome);
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -227,6 +238,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
+    // USER submissions
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
@@ -256,9 +268,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                 }
                 return null;
               },
-              onChanged: (value) => salary = double.parse(value),
+              onChanged: (value) {
+                if (_formKey.currentState!.validate()) salary = double.parse(value);
+              },
               onFieldSubmitted: (value) {
-                if (_formKey.currentState!.validate()) getData();
+                if (_formKey.currentState!.validate()) salary = double.parse(value); getData(timeunit);
               },
             ),
           ),
@@ -266,7 +280,9 @@ class MyCustomFormState extends State<MyCustomForm> {
             padding: const EdgeInsets.only(top: 30.0),
             child: ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) getData();
+                if (_formKey.currentState!.validate()) {
+                  getData(timeunit);
+                }
               },
               child: const Text('Submit'),
             ),
@@ -286,7 +302,54 @@ class MyCustomFormState extends State<MyCustomForm> {
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     const SizedBox(
-                      height: 20,
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.calendar_month),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const Text('Paid per: '),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        DropdownButton(
+                            alignment: Alignment.centerRight,
+                            value: timeunit,
+                            items: [
+                              const DropdownMenuItem(
+                                value: 1.0,
+                                child: Text("Year"),
+                              ),
+                              const DropdownMenuItem(
+                                value: 12.0,
+                                child: Text("Month"),
+                              ),
+                              const DropdownMenuItem(
+                                value: 52.0,
+                                child: Text("Week"),
+                              ),
+                              const DropdownMenuItem(
+                                value: 365.0,
+                                child: Text("Day"),
+                              ),
+                              DropdownMenuItem(
+                                value: 365.0*hoursperday,//FIX THIS
+                                child: const Text("Hour"),
+                              ),
+                            ],
+                            onChanged: (double? value) {
+                              setState(() {
+                                timeunit = value!;
+                                getData(timeunit);
+                              });
+                            }),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 15,
                     ),
                     Table(
                       border: TableBorder.all(color: Colors.grey),
