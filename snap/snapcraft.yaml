@@ -19,7 +19,7 @@ parts:
 
 apps:
   uk-salary-calculator:
-    command: uk-salary-calculator
+    command: uk_salary_calculator
     extensions: [flutter-master]
     plugs:
       [network]
