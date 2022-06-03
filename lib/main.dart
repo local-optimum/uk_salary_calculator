@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 400,
                   child: Text(
-                    'Enter your annual salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year.',
+                    'Enter your salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey.shade400),
                   ),
@@ -168,13 +168,22 @@ class MyCustomForm extends StatefulWidget {
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
+  //user input variables
+
+  double initsalary = 0;
+  double salarytime = 1;
+  double hoursperday = 8;
+
   double salary = 0;
+
+  //calculated variables
+
   double nationalinsurance = 0;
   double personalallowance = 0;
   double incometax = 0;
   double takehome = 0;
-  double timeunit = 1.0;
-  double hoursperday = 8; //1 = annual, 12 = monthly, 52 = weekly, 365 = daily hourly is then daily multiplied by hours tracked in next var
+  double timeunit =
+      1.0; //1 = annual, 12 = monthly, 52 = weekly, 365 = daily hourly is then daily multiplied by hours tracked in next var
 
   double out_salary = 0;
   double out_nationalinsurance = 0;
@@ -191,6 +200,8 @@ class MyCustomFormState extends State<MyCustomForm> {
   //primary calculating function
 
   void getData(timeunit) async {
+    salary = initsalary * salarytime;
+
     var ni = await NIcontributions().getNIcontributions(salary);
     setState(() {
       nationalinsurance = ni;
@@ -239,7 +250,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   Widget build(BuildContext context) {
     // USER submissions
-    // Build a Form widget using the _formKey created above.
+
     return Form(
       key: _formKey,
       child: Column(
@@ -252,7 +263,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.currency_pound_sharp),
                 hintText: 'Salary before deductions',
-                labelText: 'Annual Salary',
+                labelText: 'Salary',
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 filled: true,
@@ -269,13 +280,62 @@ class MyCustomFormState extends State<MyCustomForm> {
                 return null;
               },
               onChanged: (value) {
-                if (_formKey.currentState!.validate()) salary = double.parse(value);
+                if (_formKey.currentState!.validate()) {
+                  initsalary = double.parse(value);
+                }
               },
               onFieldSubmitted: (value) {
-                if (_formKey.currentState!.validate()) salary = double.parse(value); getData(timeunit);
+                if (_formKey.currentState!.validate()) {
+                  initsalary = double.parse(value);
+                }
+                getData(timeunit);
               },
             ),
           ),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 120),
+            child: DropdownButtonFormField(
+                alignment: Alignment.center,
+                value: salarytime,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.calendar_month),
+                  hintText: 'Salary before deductions',
+                  labelText: 'Paid',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  filled: true,
+                ),
+                items: [
+                  const DropdownMenuItem(
+                    value: 1.0,
+                    child: Text("Annually"),
+                  ),
+                  const DropdownMenuItem(
+                    value: 12.0,
+                    child: Text("Monthly"),
+                  ),
+                  const DropdownMenuItem(
+                    value: 52.0,
+                    child: Text("Weekly"),
+                  ),
+                  const DropdownMenuItem(
+                    value: 365.0,
+                    child: Text("Daily"),
+                  ),
+                  DropdownMenuItem(
+                    value: 365.0 * hoursperday,
+                    child: const Text("Hourly"),
+                  ),
+                ],
+                onChanged: (double? value) {
+                  setState(() {
+                    salarytime = value!;
+                    getData(timeunit);
+                  });
+                }),
+          ),
+
           Padding(
             padding: const EdgeInsets.only(top: 30.0),
             child: ElevatedButton(
@@ -316,36 +376,39 @@ class MyCustomFormState extends State<MyCustomForm> {
                           width: 10,
                         ),
                         DropdownButton(
-                            alignment: Alignment.centerRight,
-                            value: timeunit,
-                            items: [
-                              const DropdownMenuItem(
-                                value: 1.0,
-                                child: Text("Year"),
-                              ),
-                              const DropdownMenuItem(
-                                value: 12.0,
-                                child: Text("Month"),
-                              ),
-                              const DropdownMenuItem(
-                                value: 52.0,
-                                child: Text("Week"),
-                              ),
-                              const DropdownMenuItem(
-                                value: 365.0,
-                                child: Text("Day"),
-                              ),
-                              DropdownMenuItem(
-                                value: 365.0*hoursperday,//FIX THIS
-                                child: const Text("Hour"),
-                              ),
-                            ],
-                            onChanged: (double? value) {
-                              setState(() {
+                          alignment: Alignment.center,
+                          value: timeunit,
+                          items: [
+                            const DropdownMenuItem(
+                              value: 1.0,
+                              child: Text("Year"),
+                            ),
+                            const DropdownMenuItem(
+                              value: 12.0,
+                              child: Text("Month"),
+                            ),
+                            const DropdownMenuItem(
+                              value: 52.0,
+                              child: Text("Week"),
+                            ),
+                            const DropdownMenuItem(
+                              value: 365.0,
+                              child: Text("Day"),
+                            ),
+                            DropdownMenuItem(
+                              value: 365.0 * hoursperday, //FIX THIS
+                              child: const Text("Hour"),
+                            ),
+                          ],
+                          onChanged: (double? value) {
+                            setState(
+                              () {
                                 timeunit = value!;
                                 getData(timeunit);
-                              });
-                            }),
+                              },
+                            );
+                          },
+                        ),
                       ],
                     ),
                     const SizedBox(
@@ -360,7 +423,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               padding: const EdgeInsets.all(15.0),
                               child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: const Text('Annual Salary:')),
+                                  child: const Text('Gross Salary:')),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(15.0),
