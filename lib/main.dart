@@ -58,15 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 const CircleAvatar(
                   radius: 75.0,
                   backgroundColor: Colors.black,
-                  backgroundImage: AssetImage('images/thomas_sowell.png'),
+                  backgroundImage: AssetImage('images/adamsmith.png'),
                 ),
                 const SizedBox(
                   height: 30.0,
                 ),
                 SizedBox(
-                  width: 400,
+                  width: 350,
                   child: Text(
-                    '"First you take people\'s money away quietly, and then you give some of it back to them flamboyantly."',
+                    '"There is no art which one government sooner learns of another than that of draining money from the pockets of the people."',
                     style: Theme.of(context).textTheme.subtitle2,
                     textAlign: TextAlign.center,
                   ),
@@ -79,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 Text(
-                  'Thomas Sowell',
+                  'Adam Smith',
                   style: Theme.of(context).textTheme.caption,
                 ),
                 const SizedBox(
@@ -90,9 +90,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 SizedBox(
-                  width: 400,
+                  width: 450,
                   child: Text(
-                    'Enter your salary to return a breakdown of your take-home pay aftar tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year\nusing data from HMRC.',
+                    'Enter your salary to return a breakdown of your take-home pay\nafter tax and National Insurance contributions.\n\nCalculations based on the 22-23 tax year using data from HMRC.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey.shade400),
                   ),
